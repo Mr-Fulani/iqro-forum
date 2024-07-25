@@ -1,0 +1,101 @@
+{% load women_tags %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+    <link type="text/css" href="{% static 'women/css/styles.css' %}" rel="stylesheet"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="shortcut icon" href="{% static 'women/images/main.ico' %}" type="image/x-icon"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<table class="table-page" border=0 cellpadding="0" cellspacing="0">
+    <tr>
+        <td valign=top>
+            {% block mainmenu %}
+                <div class="header">
+                    <ul id="mainmenu" class="mainmenu">
+                        <li class="logo"><a href="{% url 'home' %}">
+                            <div class="logo"></div>
+                        </a></li>
+                        {% for m in mainmenu %}
+                            <li><a href="{% url m.url_name %}">{{ m.title }}</a></li>
+                        {% endfor %}
+                        {% if user.is_authenticated %}
+                            <li class="last"><a href="{% url 'users:profile' %}">{{ user.username }}</a> |
+                            <form method="post" action="{% url 'users:logout' %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" style="background:none; border:none; color:inherit; cursor:pointer; font-size: 1.03em;">Выход</button>
+                            </form></li>
+                        {% else %}
+                            <li class="last"><a href="{% url 'users:login' %}">Войти</a> | <a href="{% url 'users:register' %}">Регистрация</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                    <div class="clear"></div>
+                </div>
+            {% endblock mainmenu %}
+
+
+            <table class="table-content" border=0 cellpadding="0" cellspacing="0">
+                <tr>
+                    <!-- Sidebar слева -->
+                    <td valign="top" class="left-chapters">
+                        <ul id="leftchapters">
+                            {% if cat_selected == 0 %}
+                                <li class="selected">Все категории</li>
+                            {% else %}
+                                <li><a href="{% url 'home' %}">Все категории</a></li>
+                            {% endif %}
+
+
+                            {% show_categories cat_selected %}
+
+                            <li class="share">
+                                <p>Наш канал</p>
+                                <a class="share-yt"
+                                   href="https://www.youtube.com/channel/UClJzWfGWuGJL2t-3dYKcHTA/playlists"
+                                   target="_blank" rel="nofollow"></a>
+                            </li>
+
+                            <li>{% show_all_tags %}</li>
+
+                        </ul>
+                    </td>
+                    <!-- Конец Sidebar'а -->
+                    <td valign="top" class="content">
+                        <!-- Хлебные крошки -->
+                        {% block breadcrumbs %}
+                        {% endblock %}
+
+                        <!-- Блок контента -->
+                        <div class="content-text">
+                            {% block content %}
+                            {% endblock %}
+                        </div>
+                        <!-- Конец блока контента -->
+
+                        {% block navigation %}
+
+                        {% endblock %}
+
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <!-- Footer -->
+    <tr>
+        <td valign=top>
+            <div id="footer">
+                <p>&copy; 2023 Частичное или полное копирование информации с данного сайта для распространения на других
+                    ресурсах, приветствуется.✊🏻</p>
+            </div>
+        </td>
+    </tr>
+</table>
+<!-- Конец footer'а и страницы -->
+</body>
+</html>
