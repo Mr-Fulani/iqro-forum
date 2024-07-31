@@ -7,7 +7,6 @@ html, body {
 	color: #444;
 }
 
-
 a {
 	color: #0059b2;
 	text-decoration: none;
@@ -110,7 +109,6 @@ ul.mainmenu li a {
 ul.mainmenu li a:hover {
 	color: #FDA83D;
 }
-
 
 .panelitems {
 	text-align: center;
@@ -447,5 +445,3 @@ ul.lang-list li a:hover {color: #fdc073;}
 .list-pages .page-num-selected:hover {
 	box-shadow: none;
 }
-
-
