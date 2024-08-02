@@ -1,3 +1,4 @@
+from captcha.fields import CaptchaField
 from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import MinLengthValidator, MaxLengthValidator
@@ -42,3 +43,49 @@ class AddPostForm(forms.ModelForm):
 
 class UploadFileForm(forms.Form):
     file = forms.ImageField(label="Файл")
+
+
+
+
+
+
+
+
+
+
+
+class MultipleFileInput(forms.ClearableFileInput):
+    allow_multiple_selected = True
+
+
+class MultipleFileField(forms.FileField):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("widget", MultipleFileInput())
+        super().__init__(*args, **kwargs)
+
+    def clean(self, data, initial=None):
+        single_file_clean = super().clean
+        if isinstance(data, (list, tuple)):
+            result = [single_file_clean(d, initial) for d in data]
+        else:
+            result = single_file_clean(data, initial)
+        return result
+
+
+
+
+class ContactForm(forms.Form):
+    name = forms.CharField(max_length=100, label='Имя')
+    email = forms.EmailField()
+    message = forms.CharField(widget=forms.Textarea, label='Текст')
+    media_files = MultipleFileField(required=False, label='Медиафайлы')
+    captcha = CaptchaField()
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if self.user and self.user.is_authenticated:
+            self.fields['name'].initial = self.user.username
+            self.fields['name'].widget.attrs['readonly'] = True
+            self.fields['email'].initial = self.user.email
+            self.fields['email'].widget.attrs['readonly'] = True
