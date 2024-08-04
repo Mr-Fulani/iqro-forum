@@ -74,9 +74,14 @@ class MultipleFileField(forms.FileField):
 
 
 
+
+
+
+
+
 class ContactForm(forms.Form):
     name = forms.CharField(max_length=100, label='Имя')
-    email = forms.EmailField()
+    email = forms.EmailField(label='Email')
     message = forms.CharField(widget=forms.Textarea, label='Текст')
     media_files = MultipleFileField(required=False, label='Медиафайлы')
     captcha = CaptchaField()
@@ -87,5 +92,10 @@ class ContactForm(forms.Form):
         if self.user and self.user.is_authenticated:
             self.fields['name'].initial = self.user.username
             self.fields['name'].widget.attrs['readonly'] = True
-            self.fields['email'].initial = self.user.email
-            self.fields['email'].widget.attrs['readonly'] = True
+
+            if self.user.email:
+                self.fields['email'].initial = self.user.email
+                self.fields['email'].widget.attrs['readonly'] = True
+            else:
+                self.fields['email'].required = True
+                self.fields['email'].help_text = "Введите ваш email"

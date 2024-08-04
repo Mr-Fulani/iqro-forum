@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.cache import cache
@@ -122,13 +123,32 @@ class ContactFormView(DataMixin, FormView):
         kwargs['user'] = self.request.user
         return kwargs
 
+
     def form_valid(self, form):
         user = self.request.user
         if user.is_authenticated:
-            # Проверяем, что данные пользователя не были изменены
-            if form.cleaned_data['name'] != user.username or form.cleaned_data['email'] != user.email:
-                form.add_error(None, "Недопустимое изменение данных пользователя.")
+            # Проверяем, что имя пользователя не было изменено
+            if form.cleaned_data['name'] != user.username:
+                form.add_error(None, "Недопустимое изменение имени пользователя.")
                 return self.form_invalid(form)
+
+            # Проверяем email
+            if user.email:
+                # Если у пользователя есть email, он не должен быть изменен
+                if form.cleaned_data['email'] != user.email:
+                    form.add_error(None, "Недопустимое изменение email пользователя.")
+                    return self.form_invalid(form)
+            else:
+                # Если у пользователя нет email, новый email должен быть введен
+                new_email = form.cleaned_data['email']
+                if not new_email:
+                    form.add_error('email', "Email обязателен.")
+                    return self.form_invalid(form)
+                # Сохраняем новый email пользователя
+                user.email = new_email
+                user.save()
+                messages.success(self.request, "Ваш email успешно сохранен.")
+
 
         # Остальной код обработки формы...
         name = form.cleaned_data.get('name')

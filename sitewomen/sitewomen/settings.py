@@ -1,5 +1,4 @@
-
-
+import sys
 from pathlib import Path
 from decouple import config
 import os
@@ -16,6 +15,12 @@ SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
+
+
+
+
+
+
 
 ALLOWED_HOSTS = ['127.0.0.1']
 INTERNAL_IPS = ["127.0.0.1"]
@@ -40,6 +45,9 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
 ]
 
+
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -50,6 +58,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
+
+
+
+
 
 ROOT_URLCONF = 'sitewomen.urls'
 
@@ -98,8 +110,9 @@ DATABASES = {
 
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379",
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",  # заглушка чтоб кэширование не работало
+        # "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        # "LOCATION": "redis://127.0.0.1:6379",
     }
 }
 
@@ -229,3 +242,8 @@ SOCIAL_AUTH_PIPELINE = (
 
 
 SITE_ID = 1
+
+
+
+
+

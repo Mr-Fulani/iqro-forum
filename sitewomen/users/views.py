@@ -33,6 +33,8 @@ class RegisterUser(CreateView):
     success_url = reverse_lazy('users:login')
 
 
+
+
 class ProfileUser(LoginRequiredMixin, UpdateView):
     model = get_user_model()
     form_class = ProfileUserForm
@@ -47,6 +49,8 @@ class ProfileUser(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+
 
 
 class UserPasswordChange(PasswordChangeView):

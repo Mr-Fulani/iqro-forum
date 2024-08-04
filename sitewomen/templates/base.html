@@ -40,6 +40,14 @@
 		</div>
 {% endblock mainmenu %}
 
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
 
 <table class="table-content" border=0 cellpadding="0" cellspacing="0">
 <tr>
